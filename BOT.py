@@ -1,9 +1,9 @@
-from discord.ext import commands 
 import discord
-import numpy
+from discord.ext import commands 
 import math
-
-bot = commands.Bot(command_prefix=">")
+intents = discord.Intents.default()
+intents.message_content = True
+bot = commands.Bot(command_prefix=">", intents = intents)
 
 @bot.event
 async def on_ready():
@@ -24,5 +24,5 @@ async def XTD(ctx, a, b):
     deg = (math.atan(M) * 180) / math.pi
     await ctx.send('%.2f' % deg)
 
-bot.run("MTA4NzU5ODY1MDIxMDkxMDI4OQ.GFjleq.p1oH0i-f6ZCnQriL2hlZCWGcHDeHTLLOE0Uv8M")
+bot.run("MTA4NzU5ODY1MDIxMDkxMDI4OQ.GpcjSn.c2p3XMReBnp9O_Q6WSZYzUbhw-z9eO7CdqYX28")
 
