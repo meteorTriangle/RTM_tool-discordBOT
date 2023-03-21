@@ -27,5 +27,10 @@ async def XTD(ctx, a, b):
     reply_str = ('%.2f' % deg) + u'\N{DEGREE SIGN}'
     await ctx.send(reply_str)
 
+@bot.command()
+@commands.is_owner()
+async def shutdown(ctx):
+    await bot.close()
+
 bot.run("MTA4NzU5ODY1MDIxMDkxMDI4OQ.GpcjSn.c2p3XMReBnp9O_Q6WSZYzUbhw-z9eO7CdqYX28")
 
