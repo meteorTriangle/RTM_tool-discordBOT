@@ -22,7 +22,8 @@ async def XTD(ctx, a, b):
     print(M)
     print(math.atan(M))
     deg = (math.atan(M) * 180) / math.pi
-    await ctx.send('%.2f' % deg)
+    reply_str = ('%.2f' % deg) + u'\N{DEGREE SIGN}'
+    await ctx.send(reply_str)
 
 bot.run("MTA4NzU5ODY1MDIxMDkxMDI4OQ.GpcjSn.c2p3XMReBnp9O_Q6WSZYzUbhw-z9eO7CdqYX28")
 
