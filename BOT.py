@@ -1,6 +1,8 @@
 import discord
 from discord.ext import commands 
 import math
+import sys, os, time, atexit
+from signal import SIGTERM
 intents = discord.Intents.default()
 intents.message_content = True
 bot = commands.Bot(command_prefix=">", intents = intents)
