@@ -18,11 +18,7 @@ async def XTD(ctx, a, b):
         b_F = float(b)
     except:
         await ctx.send(f"輸入參數錯誤")
-    print(a_F)
-    print(b_F)
     M = b_F/a_F
-    print(M)
-    print(math.atan(M))
     deg = (math.atan(M) * 180) / math.pi
     reply_str = ('%.2f' % deg) + u'\N{DEGREE SIGN}'
     await ctx.send(reply_str)
