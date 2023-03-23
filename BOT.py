@@ -3,6 +3,11 @@ from discord.ext import commands
 import math
 import sys, os, time, atexit
 from signal import SIGTERM
+import os
+from dotenv import load_dotenv
+load_dotenv()
+token__ = os.getenv("token")
+
 intents = discord.Intents.default()
 intents.message_content = True
 bot = commands.Bot(command_prefix=">", intents = intents)
@@ -28,5 +33,6 @@ async def XTD(ctx, a, b):
 async def shutdown(ctx):
     await bot.close()
 
-bot.run("MTA4NzU5ODY1MDIxMDkxMDI4OQ.GpcjSn.c2p3XMReBnp9O_Q6WSZYzUbhw-z9eO7CdqYX28")
+bot.run(token__)
+
 
