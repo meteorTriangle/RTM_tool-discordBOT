@@ -10,14 +10,16 @@ token__ = os.getenv("token")
 file_path = os.getenv("RTM-tools_config")
 
 discord_prefix = "$"
+help_mess = {
+    "arctan2": discord_prefix + "arctan2 [-r/-d] [-r/-d] <x> <y>",
+    "tan": discord_prefix + "tan <degree>"
+}
 
 intents = discord.Intents.default()
 intents.message_content = True
-bot = commands.Bot(command_prefix=discord_prefix, intents = intents)
+bot = commands.Bot(command_prefix=discord_prefix, intents = intents, help = "\n".join(help_mess))
 
-help_mess = {
-    "arctan2": discord_prefix + "arctan2 [-r/-d] [-r/-d] <x> <y>",
-}
+
 
 def MissingRequiredArgument_process(message):
     data = message.split(" ")
@@ -29,7 +31,7 @@ def MissingRequiredArgument_process(message):
 async def on_ready():
     print("Bot in ready")
 
-@bot.command()
+@bot.command(help = help_mess["arctan2"])
 async def arctan2(ctx, *args):
     error_state = False
     error_message = []
@@ -107,11 +109,49 @@ async def arctan2(ctx, *args):
 
 @bot.command()
 async def tan(ctx, degree):
-    radians = (90 - float(degree))*math.pi / 180
+    error_state = False
+    error_message = []
+    deg = 1
+    try:
+        deg = float(degree)
+    except:
+        error_message.append("參數<degree>不是數字")
+        error_state = True
+    if(error_state == False):
+        if(deg > 90 or deg < 0):
+            error_message.append(u"參數<degree>超出範圍，範圍必須在0~90\N{DEGREE SIGN}之間")
+            error_state = True
+    radians = (90 - deg)*math.pi / 180
     M = math.tan(radians)
-    await ctx.send("1.00, " + '%.2f'%M)
+    x = []
+    x_Q = []
+    for y in range(100):
+        if(M*(y+1)>100):
+            pass
+        else:
+            x.append(M*(y+1))
+            x_Q.append(abs(((M*(y+1)) % 1) - 0.5))
+    min_index = 0
+    for i in range(len(x_Q)):
+        if(x_Q[i]<x_Q[min_index]):
+            min_index = i
+    trans_data = []
+    trans_data.append("斜率: " + '%.3f'%M)
+    sugess_M = round(x[min_index])
+    real_deg = math.atan((min_index+1)/sugess_M) * 180 / math.pi
+    error_data = help_mess["tan"] + "\n"  + "\n".join(error_message)
+    trans_data.append(f"推薦蓋法: 每往前{sugess_M}格，偏移{min_index+1}格，角度{'%.2f'%real_deg}" + u'\N{DEGREE SIGN}' )
+    if(error_state):
+        await ctx.send(error_data)
+    else:
+        await ctx.send("\n".join(trans_data))
     pass
-
+"""
+@bot.command()
+async def help(ctx, command_ = None, page = None):
+    trans_data = "\n".join(help_mess)
+    await ctx.send(trans_data)
+"""
 
 """
 @bot.event
