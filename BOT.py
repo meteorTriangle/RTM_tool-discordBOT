@@ -5,13 +5,15 @@ import sys, os, time, atexit
 from signal import SIGTERM
 import os
 from dotenv import load_dotenv
-load_dotenv()
+import json
+load_dotenv(dotenv_path=".env")
 token__ = os.getenv("token")
-file_path = os.getenv("RTM-tools_config")
+docs_file = open("docs/docs.json", encoding="UTF-8")
+docs = json.load(docs_file)
 
 discord_prefix = "$"
 help_mess = {
-    "arctan2": discord_prefix + "arctan2 [-r/-d] [-r/-d] <x> <y>",
+    "arctan2": discord_prefix + "arctan2 [-r/-d/-r -d] <x> <y>",
     "tan": discord_prefix + "tan <degree>"
 }
 
@@ -31,7 +33,13 @@ def MissingRequiredArgument_process(message):
 async def on_ready():
     print("Bot in ready")
 
-@bot.command(help = help_mess["arctan2"])
+@bot.command()
+async def description(ctx, command_):
+    help_ = docs["arctan2"]["help"]
+    desc = "\n".join(f"{name} {value}"for name, value in docs[command_]["description"].items())
+    await ctx.send(help_ + "\n" + desc)
+
+@bot.command(help = docs["arctan2"]["help"])
 async def arctan2(ctx, *args):
     error_state = False
     error_message = []
@@ -90,7 +98,7 @@ async def arctan2(ctx, *args):
         error_message.append("輸入參數" + ",".join(argu_error) + "不是數字")
         error_state = True
     if(len(error_message) != 0):
-        await ctx.send(help_mess["arctan2"] + "\n" + "\n".join(error_message))
+        await ctx.send(docs["arctan2"]["help"] + "\n" + "\n".join(error_message))
     
     M = ctx.b_F/ctx.a_F
     rad = math.atan(M)
