@@ -154,6 +154,70 @@ async def tan(ctx, degree):
     else:
         await ctx.send("\n".join(trans_data))
     pass
+
+@bot.command()
+async def tan_v2(ctx, *args):
+    arg_name = None
+    error = []
+    arg_ = {
+        "-i": True,                         ###Force_INT
+        "-n": 3,                            ###suggest_Size
+        "-m": 100,                          ###Max_distance
+        "-u": "degree",                     ###unit
+        }
+    for i in range(len(args)):
+        if(args[i][0] == "-"):
+            if(args[i] == "-d"):
+                arg_["-i"] = False
+            elif(args[i] == "-i"):
+                arg_["-i"] = True
+            elif(args[i] == "-n"):
+                arg_name = "-n"
+            elif(args[i] == "-m"):
+                arg_name = "-m"
+            elif(args[i] == "-u"):
+                arg_name = "-u"
+            else:
+                error.append(f"'{args[i]}'不是可選的變數")
+        else:
+            if(arg_name == "-n"):
+                try:
+                    size = int(args[i])
+                except:
+                    error.append(f"'{args[i]}'不是整數")
+                arg_["-n"] = size
+                arg_name = None
+            elif(arg_name == "-m"):
+                try:
+                    dis = int(args[i])
+                except:
+                    error.append(f"'{args[i]}'不是整數")
+                arg_["-m"] = dis
+                arg_name = None
+            elif(arg_name == "-u"):
+                if(args[i] == "degree"):
+                    arg_["-u"] = "degree"
+                elif(args[i] == "radian"):
+                    arg_["-u"] = "radian"
+                error.append(f"'{args[i]}'不是可用的描述")
+                arg_name = None
+            elif(arg_name == None):
+                try:
+                    num = int(args[i]) 
+                except:
+                    error.append(f"'{args[i]}'不是整數")
+                if(arg_["-u"] == "degree"):
+                    radian = num*180 / math.pi
+                else:
+                    radian = num
+    slope = math.tan(radian)
+    if(slope == float("inf") or slope == 0):
+        error.append(u"角度不能是0\N{DEGREE SIGN}或90\N{DEGREE SIGN}的倍數")
+    error_state = len(error) != 0
+    if(error_state):
+
+
+
 """
 @bot.command()
 async def help(ctx, command_ = None, page = None):
