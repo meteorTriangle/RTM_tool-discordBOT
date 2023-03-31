@@ -203,11 +203,11 @@ async def tan_v2(ctx, *args):
 				arg_name = None
 			elif(arg_name == None):
 				try:
-					num = int(args[i]) 
+					num = float(args[i]) 
 				except:
 					error.append(f"'{args[i]}'不是整數")
 				if(arg_["-u"] == "degree"):
-					radian = num*180 / math.pi
+					radian = num/180 * math.pi
 				else:
 					radian = num
 	slope = math.tan(radian)
@@ -215,7 +215,62 @@ async def tan_v2(ctx, *args):
 		error.append(u"角度不能是0\N{DEGREE SIGN}或90\N{DEGREE SIGN}的倍數")
 	error_state = len(error) != 0
 	if(error_state):
+		trans_data = "\n".join(error)
+		await ctx.send(trans_data)
+	else:
 		
+		suggest_array_ = []
+		distance_over = False
+		multiple = 1
+		while(not distance_over):
+			if(arg_["-i"]):
+				offset = multiple
+			else:
+				offset = multiple*0.5
+			distance = offset*(1 / slope)
+			suggest_format = {"offset": offset, "F_distance": distance}
+			real_distance = math.sqrt( (offset**2) + (distance**2) )
+			distance_over = real_distance >= arg_["-m"]
+			if((not distance_over) or multiple == 1):
+				suggest_array_.append(suggest_format)
+			multiple += 1
+		main_suggest_array = []
+		idd = 0
+		over = False
+		while(idd < arg_["-n"] and not over):
+			## get %
+			distance_array_ = []
+			distance_array_.clear()
+			for sff in range(len(suggest_array_)):
+				distance_array_.append(abs((suggest_array_[sff]["F_distance"] % 1) - 0.5))
+			min_index = find_min(distance_array_)
+			suggest_format = {"offset": offset, "F_distance": distance}
+			suggest_format["offset"] = suggest_array_[min_index]["offset"]
+			suggest_format["F_distance"] = suggest_array_[min_index]["F_distance"]
+			main_suggest_array.append(suggest_format)
+			del suggest_array_[min_index]
+			if(len(suggest_array_) == 0):
+				over = True
+			idd += 1
+		suggest_data = []
+		for hd in range(len(main_suggest_array)):
+			distance = round(main_suggest_array[hd]["F_distance"])
+			offset = main_suggest_array[hd]["offset"]
+			real_degree = 90 - math.atan(distance / offset) * 180 / math.pi
+			real_distance = math.sqrt((distance**2) + (offset**2))
+			suggest_data.append( f"每往前{distance}格，偏移{offset}格，距離: {'%.3f'%real_distance}，實際角度: {'%.3f'%real_degree} " +  u'\N{DEGREE SIGN}')
+		trans_data = ""
+		trans_data = trans_data + f"斜率: {slope} \n" + "\n".join(suggest_data)
+		await ctx.send(trans_data)
+					
+
+		
+def find_min(list_):
+	min_index = 0
+	for fd in range(len(list_)):
+		if(list_[min_index] < list_[fd]):
+			min_index = fd
+	return min_index
 
 
 
