@@ -1,0 +1,12 @@
+{
+    "arctan2": {
+        "help" : "arctan2 [-r/-d/-r -d] <x> <y>",
+        "description": {
+            "-r": "輸出弧度(單位:rad) ",
+            "-d": "輸出角度(單位:度)",
+            "x": "往前的格數",
+            "y": "偏移的格數"
+        },
+        "example": "arctan2 10 1 \n ```\n degree: 5.711° \n ```"
+    }
+}
