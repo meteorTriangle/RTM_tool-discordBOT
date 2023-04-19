@@ -8,15 +8,16 @@ from dotenv import load_dotenv
 import json
 import svgwrite
 from svgwrite import image
-os.environ['path'] += r';C:\path\cairo\dlls'
 import cairosvg
-load_dotenv(dotenv_path=".env")
+self_path = os.path.dirname(__file__) + "\\"
+print(self_path)
+load_dotenv(dotenv_path=(self_path + ".env"))
 token__ = os.getenv("token")
-docs_path = os.getenv("docs_path")
+docs_path = self_path + os.getenv("docs_path")
 print(docs_path)
 docs_file = open(docs_path + "docs.json", encoding="UTF-8")
 docs = json.load(docs_file)
-curve_data_path = os.getenv("curve_data_path")
+curve_data_path = self_path + os.getenv("curve_data_path")
 
 discord_prefix = "$"
 help_mess = {
@@ -297,15 +298,15 @@ async def test_svg(ctx, x, y):
 	imaage = discord.File(data_path + "01.png")
 	print(ctx.author.id)
 	await ctx.send(file=imaage)
-	##commands.context.Context.author
+	
 	
 @bot.group()
 async def curve(ctx):
+	data_path = curve_data_path + str(ctx.author.id) + "\\"
+	t = None
+	if not os.path.exists(data_path):
+		os.makedirs(data_path)
 	if ctx.invoked_subcommand is None:
-		data_path = curve_data_path + str(ctx.author.id) + "\\"
-		t = None
-		if not os.path.exists(data_path):
-			os.makedirs(data_path)
 		try:
 			imaage = discord.File(data_path + "01.png")
 		except:
@@ -314,12 +315,13 @@ async def curve(ctx):
 			await ctx.send("You're in fisrt using, cache not existing")
 		if(t == None):
 			await ctx.send(file=imaage)
-
+	else:
+		curve.params.update({"id": str(ctx.author.id)})
 
 
 @curve.group()
-async def first_rail(ctx, x, y, deg):
-	await ctx.send(deg)
+async def rail_1(ctx, x, y, xd, yd):
+	await ctx.send(curve.params["id"])
 
  
 
