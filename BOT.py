@@ -6,10 +6,17 @@ from signal import SIGTERM
 import os
 from dotenv import load_dotenv
 import json
+import svgwrite
+from svgwrite import image
+os.environ['path'] += r';C:\path\cairo\dlls'
+import cairosvg
 load_dotenv(dotenv_path=".env")
 token__ = os.getenv("token")
-docs_file = open("docs/docs.json", encoding="UTF-8")
+docs_path = os.getenv("docs_path")
+print(docs_path)
+docs_file = open(docs_path + "docs.json", encoding="UTF-8")
 docs = json.load(docs_file)
+curve_data_path = os.getenv("curve_data_path")
 
 discord_prefix = "$"
 help_mess = {
@@ -272,6 +279,49 @@ def find_min(list_):
 			min_index = fd
 	return min_index
 
+@bot.command()
+async def test_svg(ctx, x, y):
+	data_path = curve_data_path + str(ctx.author.id) + "\\"
+	if not os.path.exists(data_path):
+		os.makedirs(data_path)
+	print(data_path)
+	rail_image = svgwrite.Drawing(data_path + "01.svg", size=("200px", "200px"))
+	rail_image.add(rail_image.rect(insert=(0, 0), size=('100%', '100%'), rx=None, ry=None, fill='rgb(255,255,255)'))
+	line_x = rail_image.line(start=(int(x), 0), end=(int(x), 200), stroke='green', stroke_width=1)
+	line_y = rail_image.line(start=(0, int(y)), end=(200, int(y)), stroke='red', stroke_width=1)
+	rail_image.add(line_x)
+	rail_image.add(line_y)
+	rail_image.save()
+	xxml = rail_image.tostring()
+	cairosvg.svg2png(bytestring=xxml,write_to=data_path + "01.png")
+	imaage = discord.File(data_path + "01.png")
+	print(ctx.author.id)
+	await ctx.send(file=imaage)
+	##commands.context.Context.author
+	
+@bot.group()
+async def curve(ctx):
+	if ctx.invoked_subcommand is None:
+		data_path = curve_data_path + str(ctx.author.id) + "\\"
+		t = None
+		if not os.path.exists(data_path):
+			os.makedirs(data_path)
+		try:
+			imaage = discord.File(data_path + "01.png")
+		except:
+			t = True
+		if(t == True):
+			await ctx.send("You're in fisrt using, cache not existing")
+		if(t == None):
+			await ctx.send(file=imaage)
+
+
+
+@curve.group()
+async def first_rail(ctx, x, y, deg):
+	await ctx.send(deg)
+
+ 
 
 
 """

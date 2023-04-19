@@ -3,3 +3,6 @@
 
 ### ighnore config.json
 config.json
+
+### ignore curve_data
+curve_data/*
