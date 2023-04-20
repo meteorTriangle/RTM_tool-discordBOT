@@ -9,15 +9,16 @@ import json
 import svgwrite
 from svgwrite import image
 import cairosvg
+import shutil
 self_path = os.path.dirname(__file__) + "\\"
 print(self_path)
 load_dotenv(dotenv_path=(self_path + ".env"))
 token__ = os.getenv("token")
-docs_path = self_path + os.getenv("docs_path")
+docs_path = self_path + "docs\\"
 print(docs_path)
 docs_file = open(docs_path + "docs.json", encoding="UTF-8")
 docs = json.load(docs_file)
-curve_data_path = self_path + os.getenv("curve_data_path")
+curve_data_path = self_path + "curve_data\\"
 
 discord_prefix = "$"
 help_mess = {
@@ -316,12 +317,25 @@ async def curve(ctx):
 		if(t == None):
 			await ctx.send(file=imaage)
 	else:
-		curve.params.update({"id": str(ctx.author.id)})
+		json_path = data_path + "curve-1.json"
+		if not os.path.exists(json_path):
+			shutil.copyfile(self_path + "init_data\\curve-1.json", json_path)
+		print(self_path + "init_data\\curve-1.json")
+		jsonFile = open(json_path, 'r')
+		JSON_data = json.load(jsonFile)
+		jsonFile.close()
+		curve.params.update({
+			"path": json_path,
+			"JSON_data": JSON_data,
+			"id": str(ctx.author.id)})
 
 
 @curve.group()
-async def rail_1(ctx, x, y, xd, yd):
-	await ctx.send(curve.params["id"])
+async def rail_1(ctx, n, x, y, deg):
+	##x_delta = (xd-x)
+	##y_delta = (yd-y)
+	await ctx.send(str(curve.params["JSON_data"]))
+	curve.params.update({"x": x})
 
  
 
